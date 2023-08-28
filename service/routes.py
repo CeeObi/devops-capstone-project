@@ -81,9 +81,17 @@ def read_account(id):
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
-
 # ... place you code here to UPDATE an account ...
-
+@app.route("/accounts/<int:id>", methods=["PUT"])
+def update_accounts(id):
+    """When called, this updates the account"""
+    new_acct = Account.find(id)
+    app.logger.info("Request to read an Account with id: %s", id)
+    if not new_acct:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id[{id}] could not be found.")
+    new_acct.deserialize(request.get_json())
+    new_acct.update()
+    return new_acct.serialize(), status.HTTP_200_OK
 
 ######################################################################
 # DELETE AN ACCOUNT
@@ -102,8 +110,6 @@ def delete_accounts(id):
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
-
-
 def check_content_type(media_type):
     """Checks that the media type is correct"""
     content_type = request.headers.get("Content-Type")
