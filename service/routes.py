@@ -34,6 +34,7 @@ def index():
         status.HTTP_200_OK,
     )
 
+
 ######################################################################
 # CREATE A NEW ACCOUNT
 ######################################################################
@@ -56,17 +57,19 @@ def create_accounts():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
 # ... place you code here to LIST accounts ...
 @app.route("/accounts", methods=["GET"])
 def list_accounts():
-    """When called, this reads the account"""
+    """When called, this list all the account"""
     accounts = Account.all()
     account_list = [account.serialize() for account in accounts]
     app.logger.info("Returning [%s] accounts", len(account_list))
     return jsonify(account_list), status.HTTP_200_OK
+
 
 ######################################################################
 # READ AN ACCOUNT
@@ -81,6 +84,7 @@ def read_account(id):
         abort(status.HTTP_404_NOT_FOUND, f"Account with id[{id}] could not be found.")
     return acct.serialize(), status.HTTP_200_OK
 
+
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
@@ -89,12 +93,13 @@ def read_account(id):
 def update_accounts(id):
     """When called, this updates the account"""
     new_acct = Account.find(id)
-    app.logger.info("Request to read an Account with id: %s", id)
+    app.logger.info("Request to update an Account with id: %s", id)
     if not new_acct:
         abort(status.HTTP_404_NOT_FOUND, f"Account with id[{id}] could not be found.")
     new_acct.deserialize(request.get_json())
     new_acct.update()
     return new_acct.serialize(), status.HTTP_200_OK
+
 
 ######################################################################
 # DELETE AN ACCOUNT
@@ -104,11 +109,12 @@ def update_accounts(id):
 def delete_accounts(id):
     """When called, this deletes the specified account"""
     new_acct = Account.find(id)
-    app.logger.info("Request to read an Account with id: %s", id)
+    app.logger.info("Request to delete an Account with id: %s", id)
     if not new_acct:
         abort(status.HTTP_404_NOT_FOUND, f"Account with id[{id}] could not be found.")
-        new_acct.delete()
+    new_acct.delete()
     return " ", status.HTTP_204_NO_CONTENT
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
